@@ -15,6 +15,7 @@ Style Requirements:
 •⁠  ⁠Speaker turns should feel organic, not scripted
 
 Format the output as:
+[summary of script]: the summary of the script.
 [Speaker Name]: dialogue text
 [Speaker Name]: dialogue text
 
