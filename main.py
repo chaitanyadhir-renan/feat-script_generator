@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from logic.script_creation import *
 from logic.document_handling import *
 from typing import Any, Dict
+import asyncio
 
 app = FastAPI()
 
@@ -59,7 +60,6 @@ async def generate_script_endpoint(request: Request):
         "topics": topics,
     }
     scripts = []
-    import asyncio
 
     async def generate_script_async(config):
         # If create_script is synchronous and calls an external API, run in a thread pool
@@ -70,6 +70,6 @@ async def generate_script_endpoint(request: Request):
     for i in range(no_of_scripts):
         print(f"no of sequence done: {i}")
 
-    documents.save_scripts_to_docx(scripts, no_of_scripts)
+    documents.save_scripts_to_docx(scripts, no_of_scripts, language)
 
     return JSONResponse(content={"scripts": scripts})

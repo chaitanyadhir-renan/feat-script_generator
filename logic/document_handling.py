@@ -7,10 +7,22 @@ import re
 
 class documents:
     @staticmethod
-    def save_scripts_to_docx(scripts, no_of_scripts):
+    def save_scripts_to_docx(scripts, no_of_scripts, language):
         # Create 'data' folder if it doesn't exist
         data_dir = os.path.join(os.path.dirname(__file__), "data")
         os.makedirs(data_dir, exist_ok=True)
+
+        # Determine the next available number for the current language
+        prefix = f"script_{language}_"
+        existing_files = [f for f in os.listdir(data_dir) if f.startswith(prefix) and f.endswith(".docx")]
+        max_number = 0
+        for fname in existing_files:
+            match = re.match(rf"{re.escape(prefix)}(\d+)\.docx", fname)
+            if match:
+                number = int(match.group(1))
+                if number > max_number:
+                    max_number = number
+        next_number = max_number + 1
 
         doc = Document()
         for i, script in enumerate(scripts):
@@ -63,5 +75,5 @@ class documents:
             # Space between scenarios
             doc.add_paragraph("")
 
-        docx_path = os.path.join(data_dir, "script.docx")
+        docx_path = os.path.join(data_dir, f"{prefix}{next_number}.docx")
         doc.save(docx_path)
