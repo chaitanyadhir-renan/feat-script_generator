@@ -17,7 +17,7 @@ async def generate_script_endpoint(request: Request):
         "language": "English",          # str
         "emotions": ["excited", "curious"], # List[str]
         "theme": "friendship and discovery", # str
-        "topics": ["space travel", "teamwork"], # List[str]
+        "topics": ["space travel", "teamwork"], #  List[str]
         "no_of_scripts": 2              # int (optional)
     }
     Payload type:
@@ -59,9 +59,16 @@ async def generate_script_endpoint(request: Request):
         "topics": topics,
     }
     scripts = []
-    for _ in range(no_of_scripts):
-        script = script_generation.create_script(config)
-        scripts.append(script)
+    import asyncio
+
+    async def generate_script_async(config):
+        # If create_script is synchronous and calls an external API, run in a thread pool
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, script_generation.create_script, config)
+
+    scripts = await asyncio.gather(*(generate_script_async(config) for _ in range(no_of_scripts)))
+    for i in range(no_of_scripts):
+        print(f"no of sequence done: {i}")
 
     documents.save_scripts_to_docx(scripts, no_of_scripts)
 
