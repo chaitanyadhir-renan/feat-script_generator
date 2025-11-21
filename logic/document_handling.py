@@ -7,7 +7,7 @@ import re
 
 class documents:
     @staticmethod
-    def save_scripts_to_docx(scripts, no_of_scripts, language):
+    def save_scripts_to_docx(scripts, no_of_sequences, language):
         # Create 'data' folder if it doesn't exist
         data_dir = os.path.join(os.path.dirname(__file__), "data")
         os.makedirs(data_dir, exist_ok=True)
@@ -26,7 +26,7 @@ class documents:
 
         doc = Document()
         for i, script in enumerate(scripts):
-            scenario_name = f"Scenario {i+1}" if no_of_scripts > 1 else "Scenario"
+            scenario_name = f"Scenario {i+1}" if no_of_sequences > 1 else "Scenario"
             # Scenario title, bold
             p = doc.add_paragraph()
             run = p.add_run(scenario_name)

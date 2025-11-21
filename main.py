@@ -19,7 +19,7 @@ async def generate_script_endpoint(request: Request):
         "emotions": ["excited", "curious"], # List[str]
         "theme": "friendship and discovery", # str
         "topics": ["space travel", "teamwork"], #  List[str]
-        "no_of_scripts": 2              # int (optional)
+        "no_of_sequences": 2              # int (optional)
     }
     Payload type:
     {
@@ -30,7 +30,7 @@ async def generate_script_endpoint(request: Request):
         "emotions": list[str],
         "theme": str,
         "topics": list[str],
-        "no_of_scripts": int (optional)
+        "no_of_sequences": int (optional)
     }
     """
     payload: Dict[str, Any] = await request.json()
@@ -44,11 +44,11 @@ async def generate_script_endpoint(request: Request):
     emotions = payload.get("emotions")      # list of emotions/tone words
     theme: str = payload.get("theme")
     topics = payload.get("topics")          # list of topics to cover
-    no_of_scripts = payload.get("no_of_scripts", 1)
+    no_of_sequences = payload.get("no_of_sequences", 1)
     try:
-        no_of_scripts = int(no_of_scripts)
+        no_of_sequences    = int(no_of_sequences)
     except:
-        no_of_scripts = 1
+        no_of_sequences = 1
 
     config = {
         "duration": duration,
@@ -66,10 +66,10 @@ async def generate_script_endpoint(request: Request):
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, script_generation.create_script, config)
 
-    scripts = await asyncio.gather(*(generate_script_async(config) for _ in range(no_of_scripts)))
-    for i in range(no_of_scripts):
+    scripts = await asyncio.gather(*(generate_script_async(config) for _ in range(no_of_sequences)))
+    for i in range(no_of_sequences):
         print(f"no of sequence done: {i}")
 
-    documents.save_scripts_to_docx(scripts, no_of_scripts, language)
+    documents.save_scripts_to_docx(scripts, no_of_sequences, language)
 
     return JSONResponse(content={"scripts": scripts})
